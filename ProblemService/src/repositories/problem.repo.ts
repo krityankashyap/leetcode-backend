@@ -3,7 +3,7 @@ import { IProblem, Problem } from "../models/problem.model";
 export interface IProblemRepository {
   createProblem(problem: Partial<IProblem>) : Promise<IProblem>,
   getProblemById(id: string) : Promise<IProblem | null>,
-  getAllProblems() : Promise<{problems: IProblem[] , total: number}>,                // returns Array of IProblem
+  getAllProblems()  : Promise<{problems: IProblem[] , total: number}>,                // returns Array of IProblem
   updateProblem(id: string , updatedata: Partial<IProblem>) : Promise<IProblem | null>,
   deleteProblem(id: string) : Promise<boolean>,
   findByDifficulty(difficulty: "easy"|"medium"|"hard") : Promise<IProblem[]>,

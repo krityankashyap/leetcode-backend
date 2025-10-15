@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 
-export interface Testcase {
+export interface ITestcase {
   input: string,
   output: string
 }
@@ -13,10 +13,10 @@ export interface IProblem extends Document {
   createdAt: Date,
   updatedAt: Date,
   editorial: string,
-  testcase: Testcase[], // array of test cases becoz a problem have many test cases
+  testcase: ITestcase[], // array of test cases becoz a problem have many test cases
 }
 
-const testSchema= new mongoose.Schema<Testcase>({
+const testSchema= new mongoose.Schema<ITestcase>({
   input: {
     type: String,
     required: [true, "input of each testcase is required"],
