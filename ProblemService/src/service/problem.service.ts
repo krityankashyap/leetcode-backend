@@ -1,8 +1,8 @@
-import { createProblemDto, updateProblemDto } from "../dtos/problem.dtos";
+import { createProblemDto, updateProblemDto } from "../validators/problem.validator";
 import { IProblem } from "../models/problem.model";
 import { IProblemRepository } from "../repositories/problem.repo";
 import { NotFoundError } from "../utils/errors/app.error";
-import { sanitize } from "../utils/markdown.sanitizer";
+import { sanitizeMarkdown } from "../utils/markdown.sanitizer";
 
 export interface IProblemService{
   createProblem(problem: createProblemDto): Promise<IProblem>,
@@ -18,16 +18,16 @@ export class ProblemService implements IProblemService{
 
   private problemRepository : IProblemRepository;
 
-  constructor(problemRpository: IProblemRepository){  // constructor based dependency injection 
-    this.problemRepository= problemRpository
+  constructor(problemRepository: IProblemRepository){  // constructor based dependency injection 
+    this.problemRepository= problemRepository
   }
 
   async createProblem(problem: createProblemDto): Promise<IProblem> {
     
     const sanitizePayload= {
       ...problem,
-      description: await sanitize(problem.description),
-      editorial: problem.editorial && await sanitize(problem.editorial)
+      description: await sanitizeMarkdown(problem.description),
+      editorial: problem.editorial && await sanitizeMarkdown(problem.editorial)
     }
       return await this.problemRepository.createProblem(sanitizePayload);
   }
@@ -55,10 +55,10 @@ export class ProblemService implements IProblemService{
       ...updatedData
      }
      if(updatedData.description){
-      santizedPayload.description= await sanitize(updatedData.description);
+      santizedPayload.description= await sanitizeMarkdown(updatedData.description);
      }
      if(updatedData.editorial){
-      santizedPayload.editorial= await sanitize(updatedData.editorial);
+      santizedPayload.editorial= await sanitizeMarkdown(updatedData.editorial);
      }
 
       return await this.problemRepository.updateProblem(id, santizedPayload);
