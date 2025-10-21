@@ -13,7 +13,7 @@ export enum SubmissionLanguage {
   python= "python"
 }
 
-export interface Isubmission extends Document{
+export interface ISubmission extends Document{
   problemId: string,
   code: string,
   language: SubmissionLanguage,
@@ -22,7 +22,7 @@ export interface Isubmission extends Document{
   updatedAt: Date,
 }
 
-const submissionSchema= new Schema<Isubmission>({
+const submissionSchema= new Schema<ISubmission>({
   problemId: {
     type: String,
     required: [true , "ProblemId is required"]
@@ -54,4 +54,4 @@ const submissionSchema= new Schema<Isubmission>({
   }
 });
 
-export const Submission = model<Isubmission>("submissionSchema", submissionSchema)
+export const Submission = model<ISubmission>("submissionSchema", submissionSchema)
