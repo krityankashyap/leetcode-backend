@@ -6,7 +6,7 @@ import { newRedisConnection } from "../config/redis.config";
 async function setupEvaluationWorker(){
   
   const worker= new Worker(SUBMISSION_QUEUE, async (job)=>{
-     logger.info(`Processing the job ${job}`);
+     logger.info(`Processing the job ${job.id}`);
   }, {
     connection: newRedisConnection()
   });
