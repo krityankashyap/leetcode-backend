@@ -6,6 +6,7 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { startWorker } from './worker/evaluation.worker';
+import { pullAllImage } from './utils/containers/pullimage';
 const app = express();
 
 app.use(express.json());
@@ -33,4 +34,7 @@ app.listen(serverConfig.PORT, async () => {
 
     await startWorker();
     logger.info("Evaluation on queue has started");
+
+    await pullAllImage();
+    console.log("pulling image successfully");
 });
