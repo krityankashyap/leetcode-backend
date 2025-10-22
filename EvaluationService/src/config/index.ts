@@ -2,7 +2,9 @@
 import dotenv from 'dotenv';
 
 type ServerConfig = {
-    PORT: number
+    PORT: number,
+    PROBLEM_SERVICE: string,
+    SUBMISSION_SERVICE: string
 }
 
 function loadEnv() {
@@ -13,5 +15,7 @@ function loadEnv() {
 loadEnv();
 
 export const serverConfig: ServerConfig = {
-    PORT: Number(process.env.PORT) || 3001
+    PORT: Number(process.env.PORT) || 3002,
+    PROBLEM_SERVICE: String(process.env.PROBLEM_SERVICE) || "http://localhost:3000/api/v1",
+    SUBMISSION_SERVICE: String(process.env.SUBMISSION_SERVICE) || "http://localhost:3001/api/v1"
 };
