@@ -1,15 +1,34 @@
 import { PYTHON_IMAGE } from "../constants";
+import { InternalServerError } from "../errors/app.error";
+import { commands } from "./commands.utils";
 import { createNewDockerContainer } from "./createContainer.util";
 
-export async function runPythonCode(code: string){
+const allowListedLanguage= ["python", "cpp"];
 
-  const runCommand= `echo '${code}' >  code.py && python3 code.py`;
+export interface runCodeOptions{
+  code: string,
+  language: "python",
+  timeout: number
+}
+
+export async function runCode(options: runCodeOptions){
+   
+  const {code , language, timeout}= options;
+  
+  if(!allowListedLanguage.includes(language)){
+    throw new InternalServerError(`Invalid language ${language}`);
+  }
 
     const container= await createNewDockerContainer({  // this is going to create the container
         ImageName: PYTHON_IMAGE,
-        cmdExecutable: ["/bin/sh", "-c", runCommand],       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
+        cmdExecutable: commands[language](code),       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
         memoryLimit: 1024*1024*1024, 
     });
+
+    const timeLimitExceededTimeout= setTimeout(()=>{
+        console.log("Time limit exceede");
+        container?.kill();
+    }, timeout)
 
     console.log("Container created successfully", container?.id);
 
@@ -32,4 +51,6 @@ export async function runPythonCode(code: string){
        console.log("container logs is:" , logs?.toString());
 
        await container?.remove();
+
+       clearTimeout(timeLimitExceededTimeout);
 }
