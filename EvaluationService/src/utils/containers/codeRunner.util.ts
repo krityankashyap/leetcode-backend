@@ -1,4 +1,3 @@
-import { PYTHON_IMAGE } from "../constants";
 import { InternalServerError } from "../errors/app.error";
 import { commands } from "./commands.utils";
 import { createNewDockerContainer } from "./createContainer.util";
@@ -7,20 +6,21 @@ const allowListedLanguage= ["python", "cpp"];
 
 export interface runCodeOptions{
   code: string,
-  language: "python",
-  timeout: number
+  language: "python" | "cpp",
+  timeout: number,
+  imageName: string
 }
 
 export async function runCode(options: runCodeOptions){
    
-  const {code , language, timeout}= options;
+  const {code , language, timeout, imageName}= options;
   
   if(!allowListedLanguage.includes(language)){
     throw new InternalServerError(`Invalid language ${language}`);
   }
 
     const container= await createNewDockerContainer({  // this is going to create the container
-        ImageName: PYTHON_IMAGE,
+        ImageName: imageName,
         cmdExecutable: commands[language](code),       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
         memoryLimit: 1024*1024*1024, 
     });
