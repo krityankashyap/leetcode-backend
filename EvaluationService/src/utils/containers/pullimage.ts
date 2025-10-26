@@ -1,5 +1,5 @@
 import Docker from "dockerode"
-import { CPP_IMAGE, PYTHON_IMAGE } from "../constants";
+import { CPP_IMAGE, PYTHON_IMAGE , JAVA_IMAGE} from "../constants";
 import logger from "../../config/logger.config";
 
 
@@ -28,7 +28,7 @@ export async function pullImage(image: string){
 };
 
 export async function pullAllImage(){
-  const images= [PYTHON_IMAGE, CPP_IMAGE];
+  const images= [PYTHON_IMAGE, CPP_IMAGE, JAVA_IMAGE];
 
   // parallely start pulling both the image -> promise.all()
   const promises= images.map(image=> pullImage(image));

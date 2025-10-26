@@ -8,7 +8,7 @@ import { attachCorrelationIdMiddleware } from './middlewares/correlation.middlew
 import { startWorker } from './worker/evaluation.worker';
 import { pullAllImage } from './utils/containers/pullimage';
 import { runCode } from './utils/containers/codeRunner.util';
-import { CPP_IMAGE, PYTHON_IMAGE } from './utils/constants';
+import { CPP_IMAGE, JAVA_IMAGE, PYTHON_IMAGE } from './utils/constants';
 const app = express();
 
 app.use(express.json());
@@ -44,6 +44,8 @@ app.listen(serverConfig.PORT, async () => {
 
     await testCppCode();
 
+    await testjavaCode();
+
 });
 
    async function testPythonCode(){
@@ -75,5 +77,21 @@ app.listen(serverConfig.PORT, async () => {
         timeout: 3000,
         imageName: CPP_IMAGE
     })
+   }
+
+   async function testjavaCode(){
+    const javaCode= `
+    public class Main {
+    public static void main(String[] args) {
+        System.out.print("Hello world!");
+    }
+    } 
+`
+      await runCode({
+        code: javaCode,
+        language: "java",
+        timeout: 8000,
+        imageName: JAVA_IMAGE
+      })
    }
 

@@ -8,5 +8,10 @@ export const commands= {
   cpp: function(code: string){
     const runCommand= `echo '${code}' > code.cpp && g++ code.cpp -o code && ./code`;
     return ['/bin/bash', '-c', runCommand];
+  },
+
+  java: function(code: string){
+    const runCommand= `echo '${code}' > code.java && javac code.java`;
+    return ['/bin/bash', '-c', runCommand];
   }
 }

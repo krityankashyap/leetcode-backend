@@ -6,7 +6,7 @@ const allowListedLanguage= ["python", "cpp"];
 
 export interface runCodeOptions{
   code: string,
-  language: "python" | "cpp",
+  language: "python" | "cpp" | "java",
   timeout: number,
   imageName: string
 }
