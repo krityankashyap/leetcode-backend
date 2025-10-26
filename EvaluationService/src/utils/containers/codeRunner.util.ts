@@ -8,12 +8,13 @@ export interface runCodeOptions{
   code: string,
   language: "python" | "cpp" | "java",
   timeout: number,
-  imageName: string
+  imageName: string,
+  input: string
 }
 
 export async function runCode(options: runCodeOptions){
    
-  const {code , language, timeout, imageName}= options;
+  const {code , language, timeout, imageName, input}= options;
   
   if(!allowListedLanguage.includes(language)){
     throw new InternalServerError(`Invalid language ${language}`);
@@ -21,7 +22,7 @@ export async function runCode(options: runCodeOptions){
 
     const container= await createNewDockerContainer({  // this is going to create the container
         ImageName: imageName,
-        cmdExecutable: commands[language](code),       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
+        cmdExecutable: commands[language](code, input),       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
         memoryLimit: 1024*1024*1024, 
     });
 
@@ -47,6 +48,10 @@ export async function runCode(options: runCodeOptions){
         stdout: true,
         stderr: true
        });
+
+       const containerLogs= processLogs(logs);
+
+       console.log("Container log:", containerLogs);
        
        console.log("container logs is:" , logs?.toString());
 
@@ -54,3 +59,10 @@ export async function runCode(options: runCodeOptions){
 
        clearTimeout(timeLimitExceededTimeout);
 }
+
+function processLogs(logs: Buffer | undefined){
+  return logs?.toString('utf8')
+              .replace(/\x00/g, '') // Remove null bytes
+              .replace(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/g, '') // Remove control characters except \n (0x0A)
+              .trim();
+} 
