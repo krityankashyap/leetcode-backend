@@ -15,7 +15,10 @@ export const updateSubmissionStatusSchema = z.object({
     status: z.nativeEnum(SubmissionStatus, {
         errorMap: () => ({ message: "Status must be one of: pending, compiling, running, accepted, wrong_answer" })
     }),
-    submissionData: z.any()
+    submissionData: z.object({
+        testCaseId: z.string().min(1, "Testcase is required"),
+        status: z.string().min(1, "status is required")
+    })
 });
 
 // Schema for query parameters (if needed for filtering)

@@ -7,8 +7,8 @@ import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { startWorker } from './worker/evaluation.worker';
 import { pullAllImage } from './utils/containers/pullimage';
-import { runCode } from './utils/containers/codeRunner.util';
-import { CPP_IMAGE,  PYTHON_IMAGE } from './utils/constants';
+// import { runCode } from './utils/containers/codeRunner.util';
+// import { CPP_IMAGE,  PYTHON_IMAGE } from './utils/constants';
 const app = express();
 
 app.use(express.json());
@@ -40,44 +40,44 @@ app.listen(serverConfig.PORT, async () => {
     await pullAllImage();
     console.log("pulling image successfully");
 
-    await testPythonCode();
+    // await testPythonCode();
 
-    await testCppCode();
+    // await testCppCode();
 
 });
 
-   async function testPythonCode(){
-    const pythonCode= `print("Hello world")`;
+//    async function testPythonCode(){
+//     const pythonCode= `print("Hello world")`;
 
-    // 1. take the python code and dump in a file and run the python file in the container
+//     // 1. take the python code and dump in a file and run the python file in the container
 
-    await runCode({
-        code: pythonCode,
-        language: "python",
-        timeout: 3000,
-        imageName: PYTHON_IMAGE,
-        input: "6"
-    });
-   }
+//     await runCode({
+//         code: pythonCode,
+//         language: "python",
+//         timeout: 3000,
+//         imageName: PYTHON_IMAGE,
+//         input: "6"
+//     });
+//    }
 
-   async function testCppCode(){
-    const cppCode= `
-    #include<iostream>
-    using namespace std;
+//    async function testCppCode(){
+//     const cppCode= `
+//     #include<iostream>
+//     using namespace std;
     
-    int main(){
-    cout<<"Hello world!";
-    return 0;
-    }`
+//     int main(){
+//     cout<<"Hello world!";
+//     return 0;
+//     }`
 
-    await runCode({
-        code: cppCode,
-        language: "cpp",
-        timeout: 3000,
-        imageName: CPP_IMAGE,
-        input: "6"
-    })
-   }
+//     await runCode({
+//         code: cppCode,
+//         language: "cpp",
+//         timeout: 3000,
+//         imageName: CPP_IMAGE,
+//         input: "6"
+//     })
+//    }
 
    
 

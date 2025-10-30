@@ -25,9 +25,11 @@ export async function runCode(options: runCodeOptions){
         cmdExecutable: commands[language](code, input),       // (a) "/bin/sh -> command that we r going to use shell command inside the conatiner" , (b) -c -> we r going to use command as string
         memoryLimit: 1024*1024*1024, 
     });
+    let isTimeLimitExceeded= false;
 
     const timeLimitExceededTimeout= setTimeout(()=>{
         console.log("Time limit exceede");
+        isTimeLimitExceeded= true;
         container?.kill();
     }, timeout)
 
@@ -41,7 +43,13 @@ export async function runCode(options: runCodeOptions){
        2) once the task has been done then we should remove the conatiner   
     */
        
-       const status= await container?.wait();  //Block until a container stops, then returns the exit code.
+       const status= await container?.wait(); //Block until a container stops, then returns the exit code.
+       if(isTimeLimitExceeded) {
+          return {
+            status: "time_limit_exceeded",
+            output: "Time limit Exceeded"
+          }
+       }
        console.log("container status", status);
 
        const logs= await container?.logs({
@@ -58,6 +66,22 @@ export async function runCode(options: runCodeOptions){
        await container?.remove();
 
        clearTimeout(timeLimitExceededTimeout);
+
+       if(status.StatusCode== 0){
+        // success
+        console.log("Container existed successfully");
+        return {
+          status: "success",
+          output: containerLogs,
+        }
+       } else {
+        // error
+        console.log("container existed with error");
+        return {
+          status: "false",
+          output: containerLogs
+        }
+       }
 }
 
 function processLogs(logs: Buffer | undefined){

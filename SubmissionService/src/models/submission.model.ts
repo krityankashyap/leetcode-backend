@@ -1,11 +1,9 @@
 import  { Document, Schema, model} from "mongoose";
+import { object } from "zod";
 
 export enum SubmissionStatus {
-  PENDING= "pending",
-  COMPILING= "compiling",
-  RUNNING= "running",
-  ACCEPTED= "accepted",
-  WRONG_ANSWER= "wrong answer",
+  completed= "COMPLETED",
+  pending= "PENDING"
 }
 
 export enum SubmissionLanguage {
@@ -13,11 +11,16 @@ export enum SubmissionLanguage {
   python= "python"
 }
 
+export interface ISubmissionDataForTestCases{
+ testCaseId: string,
+ status: string
+}
 export interface ISubmission extends Document{
   problemId: string,
   code: string,
   language: SubmissionLanguage,
   status: SubmissionStatus,
+  submissionData: ISubmissionDataForTestCases
   createdAt: Date,
   updatedAt: Date,
 }
@@ -39,8 +42,13 @@ const submissionSchema= new Schema<ISubmission>({
   status: {
     type: String,
     required: true,
-    default: SubmissionStatus.PENDING,
+    default: SubmissionStatus.pending,
     enum: Object.values(SubmissionLanguage),
+  },
+  submissionData: {
+    type: object,
+    required: true,
+    default: {}
   },
 }, {
   timestamps: true,

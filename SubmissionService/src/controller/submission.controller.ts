@@ -55,15 +55,16 @@ export const SubmissionController= {
 
   async updateSubmission(req: Request, res: Response): Promise<void> {
     const { id}= req.params;
-    const { status, submissionData }= req.body;
+    const { status,  submissionData }= req.body;
 
     logger.info("Updating submission status", { 
       submissionId: id, 
-      status ,
+      status,
       submissionData
+      
   });
 
-  const submission= await submissionService.updateSubmissionStatus(id, status);
+  const submission= await submissionService.updateSubmissionStatus(id, status, submissionData);
 
   logger.info("Submission status updated successfully", { 
     submissionId: id, 
